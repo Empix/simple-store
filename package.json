@@ -6,7 +6,8 @@
   "scripts": {
     "prepare": "husky install",
     "test": "jest --passWithNoTests",
-    "test:staged": "jest --passWithNoTests"
+    "test:watch": "yarn test --watch",
+    "test:staged": "yarn test"
   },
   "devDependencies": {
     "@types/jest": "^27.0.3",
