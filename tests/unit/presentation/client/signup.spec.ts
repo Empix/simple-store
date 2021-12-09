@@ -1,15 +1,18 @@
 import { SignUpController } from '../../../../src/presentation/controllers/client/signup';
 import { HttpRequest } from '../../../../src/presentation/protocols/http';
+import { FakeCreateClient } from '../../../mock/fakes/controllers/signup/create-client';
 import { fakeSignUpRequestBody } from '../../../mock/fakes/controllers/signup/request-body';
 import { FakeSignUpValidator } from '../../../mock/fakes/controllers/signup/validator';
 
 function makeSut() {
+  const createClient = new FakeCreateClient();
   const validator = new FakeSignUpValidator();
-  const signUpController = new SignUpController(validator);
+  const signUpController = new SignUpController(validator, createClient);
 
   return {
     sut: signUpController,
     validator,
+    createClient,
   };
 }
 
@@ -177,5 +180,25 @@ describe('SignUp Controller', () => {
     expect(result.statusCode).toBe(400);
     expect(result.body?.errors).toBeTruthy();
     expect(result.body?.errors).toHaveLength(1);
+  });
+
+  it('Should call createClient with correct values', () => {
+    const { sut, createClient } = makeSut();
+    const createSpy = jest.spyOn(createClient, 'create');
+
+    const httpRequest: HttpRequest = {
+      body: fakeSignUpRequestBody,
+    };
+
+    sut.handle(httpRequest);
+
+    const { name, email, password, cpf } = fakeSignUpRequestBody;
+    expect(createSpy).toHaveBeenCalledTimes(1);
+    expect(createSpy).toHaveBeenCalledWith({
+      name,
+      email,
+      password,
+      cpf,
+    });
   });
 });

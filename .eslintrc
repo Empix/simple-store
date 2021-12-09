@@ -8,6 +8,7 @@
     "import/prefer-default-export": "off",
     "class-methods-use-this": "off",
     "no-prototype-builtins": "off",
-    "@typescript-eslint/no-unused-vars": "off"
+    "@typescript-eslint/no-unused-vars": "off",
+    "object-curly-newline": "off"
   }
 }

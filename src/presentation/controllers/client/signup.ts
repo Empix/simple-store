@@ -1,3 +1,4 @@
+import { CreateClient } from '../../../domain/usecases/create-client';
 import { InvalidParameter } from '../../errors/InvalidParameter';
 import { MissingParameter } from '../../errors/MissingParameter';
 import { badRequest } from '../../helpers/http';
@@ -5,7 +6,10 @@ import { HttpRequest, HttpResponse } from '../../protocols/http';
 import { SignUpValidator } from '../../protocols/validator';
 
 export class SignUpController {
-  constructor(private readonly validator: SignUpValidator) {}
+  constructor(
+    private readonly validator: SignUpValidator,
+    private readonly createClient: CreateClient,
+  ) {}
 
   handle(httpRequest: HttpRequest): HttpResponse {
     if (!httpRequest.body) {
@@ -43,6 +47,8 @@ export class SignUpController {
     const {
       email,
       cpf,
+      name,
+      password,
       address: { zipcode },
     } = httpRequest.body;
 
@@ -63,6 +69,8 @@ export class SignUpController {
     if (validationErrors.length > 0) {
       return badRequest(validationErrors);
     }
+
+    this.createClient.create({ name, email, password, cpf });
 
     return {
       statusCode: 200,
