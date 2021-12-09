@@ -109,7 +109,7 @@ describe('SignUp Controller', () => {
     expect(result.body?.errors).toHaveLength(4);
   });
 
-  it('Should call validator for email, cpf and zipcode', () => {
+  it('Should call validator for email, cpf and zipcode with correct values', () => {
     const { sut, validator } = makeSut();
     const isEmailSpy = jest.spyOn(validator, 'isEmail');
     const isCPFSpy = jest.spyOn(validator, 'isCPF');
@@ -121,9 +121,17 @@ describe('SignUp Controller', () => {
 
     sut.handle(httpRequest);
 
+    const {
+      email,
+      cpf,
+      address: { zipcode },
+    } = fakeSignUpRequestBody;
     expect(isEmailSpy).toHaveBeenCalledTimes(1);
+    expect(isEmailSpy).toHaveBeenCalledWith(email);
     expect(isCPFSpy).toHaveBeenCalledTimes(1);
+    expect(isCPFSpy).toHaveBeenCalledWith(cpf);
     expect(isZipCodeSpy).toHaveBeenCalledTimes(1);
+    expect(isZipCodeSpy).toHaveBeenCalledWith(zipcode);
   });
 
   it('Should return status code 400 if email is invalid', () => {
