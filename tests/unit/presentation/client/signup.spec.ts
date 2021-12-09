@@ -201,4 +201,16 @@ describe('SignUp Controller', () => {
       cpf,
     });
   });
+
+  it('Should return a new client if createClient succeeds', () => {
+    const { sut } = makeSut();
+    const httpRequest: HttpRequest = {
+      body: fakeSignUpRequestBody,
+    };
+
+    const result = sut.handle(httpRequest);
+
+    expect(result.statusCode).toBe(200);
+    expect(result.body).toHaveProperty('id');
+  });
 });

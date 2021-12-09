@@ -70,10 +70,11 @@ export class SignUpController {
       return badRequest(validationErrors);
     }
 
-    this.createClient.create({ name, email, password, cpf });
+    const client = this.createClient.create({ name, email, password, cpf });
 
     return {
       statusCode: 200,
+      body: client,
     };
   }
 }
