@@ -8,7 +8,7 @@ export class SignUpController {
       return badRequest([new MissingParameter('body')]);
     }
 
-    const requiredFields = ['name', 'email', 'password', 'cpf'];
+    const requiredFields = ['name', 'email', 'password', 'cpf', 'address'];
     const errors = requiredFields
       .map((field) => {
         if (!httpRequest.body!.hasOwnProperty(field)) {
@@ -17,6 +17,20 @@ export class SignUpController {
         return null;
       })
       .filter((error): error is MissingParameter => error !== null);
+
+    if (httpRequest.body.address) {
+      const requiredAddressFields = ['street', 'city', 'state', 'zipcode'];
+      errors.push(
+        ...requiredAddressFields
+          .map((field) => {
+            if (!httpRequest.body!.address.hasOwnProperty(field)) {
+              return new MissingParameter(`address.${field}`);
+            }
+            return null;
+          })
+          .filter((error): error is MissingParameter => error !== null),
+      );
+    }
 
     if (errors.length > 0) {
       return badRequest(errors);
