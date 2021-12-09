@@ -1,8 +1,11 @@
 import { MissingParameter } from '../../errors/MissingParameter';
 import { badRequest } from '../../helpers/http';
 import { HttpRequest, HttpResponse } from '../../protocols/http';
+import { SignUpValidator } from '../../protocols/validator';
 
 export class SignUpController {
+  constructor(private readonly validator: SignUpValidator) {}
+
   handle(httpRequest: HttpRequest): HttpResponse {
     if (!httpRequest.body) {
       return badRequest([new MissingParameter('body')]);
@@ -35,6 +38,16 @@ export class SignUpController {
     if (errors.length > 0) {
       return badRequest(errors);
     }
+
+    const {
+      email,
+      cpf,
+      address: { zipcode },
+    } = httpRequest.body;
+
+    this.validator.isEmail(email);
+    this.validator.isCPF(cpf);
+    this.validator.isZipCode(zipcode);
 
     return {
       statusCode: 200,
