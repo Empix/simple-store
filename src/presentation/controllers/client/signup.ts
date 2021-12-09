@@ -8,7 +8,7 @@ export class SignUpController {
       return badRequest([new MissingParameter('body')]);
     }
 
-    const requiredFields = ['name'];
+    const requiredFields = ['name', 'email'];
     const errors = requiredFields
       .map((field) => {
         if (!httpRequest.body!.hasOwnProperty(field)) {

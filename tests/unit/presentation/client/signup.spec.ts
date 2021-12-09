@@ -27,4 +27,19 @@ describe('SignUp Controller', () => {
     expect(result.body?.errors).toBeTruthy();
     expect(result.body?.errors).toHaveLength(1);
   });
+
+  it('Should return status code 400 if email is not provided', () => {
+    const sut = new SignUpController();
+    const httpRequest: HttpRequest = {
+      body: {
+        name: 'Name',
+      },
+    };
+
+    const result = sut.handle(httpRequest);
+
+    expect(result.statusCode).toBe(400);
+    expect(result.body?.errors).toBeTruthy();
+    expect(result.body?.errors).toHaveLength(1);
+  });
 });
