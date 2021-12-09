@@ -8,6 +8,20 @@ export class SignUpController {
       return badRequest([new MissingParameter('body')]);
     }
 
+    const requiredFields = ['name'];
+    const errors = requiredFields
+      .map((field) => {
+        if (!httpRequest.body!.hasOwnProperty(field)) {
+          return new MissingParameter(field);
+        }
+        return null;
+      })
+      .filter((error): error is MissingParameter => error !== null);
+
+    if (errors.length > 0) {
+      return badRequest(errors);
+    }
+
     return {
       statusCode: 200,
     };
