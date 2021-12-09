@@ -1,3 +1,4 @@
+import { InvalidParameter } from '../../errors/InvalidParameter';
 import { MissingParameter } from '../../errors/MissingParameter';
 import { badRequest } from '../../helpers/http';
 import { HttpRequest, HttpResponse } from '../../protocols/http';
@@ -12,7 +13,7 @@ export class SignUpController {
     }
 
     const requiredFields = ['name', 'email', 'password', 'cpf', 'address'];
-    const errors = requiredFields
+    const requiredFieldsErrors = requiredFields
       .map((field) => {
         if (!httpRequest.body!.hasOwnProperty(field)) {
           return new MissingParameter(field);
@@ -23,7 +24,7 @@ export class SignUpController {
 
     if (httpRequest.body.address) {
       const requiredAddressFields = ['street', 'city', 'state', 'zipcode'];
-      errors.push(
+      requiredFieldsErrors.push(
         ...requiredAddressFields
           .map((field) => {
             if (!httpRequest.body!.address.hasOwnProperty(field)) {
@@ -35,8 +36,8 @@ export class SignUpController {
       );
     }
 
-    if (errors.length > 0) {
-      return badRequest(errors);
+    if (requiredFieldsErrors.length > 0) {
+      return badRequest(requiredFieldsErrors);
     }
 
     const {
@@ -45,9 +46,23 @@ export class SignUpController {
       address: { zipcode },
     } = httpRequest.body;
 
-    this.validator.isEmail(email);
-    this.validator.isCPF(cpf);
-    this.validator.isZipCode(zipcode);
+    const validationFields = {
+      email: this.validator.isEmail(email),
+      cpf: this.validator.isCPF(cpf),
+      zipcode: this.validator.isZipCode(zipcode),
+    };
+    const validationErrors = Object.entries(validationFields)
+      .map(([field, isValid]) => {
+        if (!isValid) {
+          return new InvalidParameter(field);
+        }
+        return null;
+      })
+      .filter((error): error is InvalidParameter => error !== null);
+
+    if (validationErrors.length > 0) {
+      return badRequest(validationErrors);
+    }
 
     return {
       statusCode: 200,

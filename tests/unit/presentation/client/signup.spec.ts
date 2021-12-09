@@ -125,4 +125,49 @@ describe('SignUp Controller', () => {
     expect(isCPFSpy).toHaveBeenCalledTimes(1);
     expect(isZipCodeSpy).toHaveBeenCalledTimes(1);
   });
+
+  it('Should return status code 400 if email is invalid', () => {
+    const { sut, validator } = makeSut();
+    jest.spyOn(validator, 'isEmail').mockReturnValueOnce(false);
+    const fakeRequest = fakeSignUpRequestBody;
+    const httpRequest: HttpRequest = {
+      body: { ...fakeRequest, email: 'invalid_email' },
+    };
+
+    const result = sut.handle(httpRequest);
+
+    expect(result.statusCode).toBe(400);
+    expect(result.body?.errors).toBeTruthy();
+    expect(result.body?.errors).toHaveLength(1);
+  });
+
+  it('Should return status code 400 if CPF is invalid', () => {
+    const { sut, validator } = makeSut();
+    jest.spyOn(validator, 'isEmail').mockReturnValueOnce(false);
+    const fakeRequest = fakeSignUpRequestBody;
+    const httpRequest: HttpRequest = {
+      body: { ...fakeRequest, cpf: 'invalid_cpf' },
+    };
+
+    const result = sut.handle(httpRequest);
+
+    expect(result.statusCode).toBe(400);
+    expect(result.body?.errors).toBeTruthy();
+    expect(result.body?.errors).toHaveLength(1);
+  });
+
+  it('Should return status code 400 if zipcode is invalid', () => {
+    const { sut, validator } = makeSut();
+    jest.spyOn(validator, 'isEmail').mockReturnValueOnce(false);
+    const fakeRequest = fakeSignUpRequestBody;
+    const httpRequest: HttpRequest = {
+      body: { ...fakeRequest, zipcode: 'invalid_zipcode' },
+    };
+
+    const result = sut.handle(httpRequest);
+
+    expect(result.statusCode).toBe(400);
+    expect(result.body?.errors).toBeTruthy();
+    expect(result.body?.errors).toHaveLength(1);
+  });
 });
