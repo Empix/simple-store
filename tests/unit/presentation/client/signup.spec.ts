@@ -213,4 +213,18 @@ describe('SignUp Controller', () => {
     expect(result.statusCode).toBe(200);
     expect(result.body).toHaveProperty('id');
   });
+
+  it('Should return status code 500 if createClient throw an error', () => {
+    const { sut, createClient } = makeSut();
+    jest.spyOn(createClient, 'create').mockImplementation(() => {
+      throw new Error();
+    });
+    const httpRequest: HttpRequest = {
+      body: fakeSignUpRequestBody,
+    };
+
+    const result = sut.handle(httpRequest);
+
+    expect(result.statusCode).toBe(500);
+  });
 });
