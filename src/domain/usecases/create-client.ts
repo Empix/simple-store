@@ -8,5 +8,5 @@ export interface CreateClientValues {
 }
 
 export interface CreateClient {
-  create(client: CreateClientValues): Client;
+  create(client: CreateClientValues): Promise<Client>;
 }

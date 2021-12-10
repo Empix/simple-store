@@ -1,10 +1,11 @@
+import { Client } from '../../../../../src/domain/models/client';
 import {
   CreateClient,
   CreateClientValues,
 } from '../../../../../src/domain/usecases/create-client';
 
 export class FakeCreateClient implements CreateClient {
-  create(client: CreateClientValues) {
+  async create(client: CreateClientValues): Promise<Client> {
     const { name, email, password, cpf } = client;
 
     return {

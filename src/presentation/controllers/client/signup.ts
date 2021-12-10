@@ -1,7 +1,7 @@
 import { CreateClient } from '../../../domain/usecases/create-client';
 import { InvalidParameter } from '../../errors/InvalidParameter';
 import { MissingParameter } from '../../errors/MissingParameter';
-import { badRequest, internalServerError } from '../../helpers/http';
+import { badRequest, internalServerError, ok } from '../../helpers/http';
 import { HttpRequest, HttpResponse } from '../../protocols/http';
 import { SignUpValidator } from '../../protocols/validator';
 
@@ -11,7 +11,7 @@ export class SignUpController {
     private readonly createClient: CreateClient,
   ) {}
 
-  handle(httpRequest: HttpRequest): HttpResponse {
+  async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       if (!httpRequest.body) {
         return badRequest([new MissingParameter('body')]);
@@ -71,12 +71,14 @@ export class SignUpController {
         return badRequest(validationErrors);
       }
 
-      const client = this.createClient.create({ name, email, password, cpf });
+      const client = await this.createClient.create({
+        name,
+        email,
+        password,
+        cpf,
+      });
 
-      return {
-        statusCode: 200,
-        body: client,
-      };
+      return ok(client);
     } catch (err) {
       return internalServerError();
     }

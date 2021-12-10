@@ -17,102 +17,102 @@ function makeSut() {
 }
 
 describe('SignUp Controller', () => {
-  it('Should return status code 400 if body is not provided', () => {
+  it('Should return status code 400 if body is not provided', async () => {
     const { sut } = makeSut();
     const httpRequest: HttpRequest = {};
 
-    const result = sut.handle(httpRequest);
+    const result = await sut.handle(httpRequest);
 
     expect(result.statusCode).toBe(400);
     expect(result.body?.errors).toBeTruthy();
     expect(result.body?.errors).toHaveLength(1);
   });
 
-  it('Should return status code 400 if name is not provided', () => {
+  it('Should return status code 400 if name is not provided', async () => {
     const { sut } = makeSut();
     const { email, ...fakeRequest } = fakeSignUpRequestBody;
     const httpRequest: HttpRequest = {
       body: fakeRequest,
     };
 
-    const result = sut.handle(httpRequest);
+    const result = await sut.handle(httpRequest);
 
     expect(result.statusCode).toBe(400);
     expect(result.body?.errors).toBeTruthy();
     expect(result.body?.errors).toHaveLength(1);
   });
 
-  it('Should return status code 400 if email is not provided', () => {
+  it('Should return status code 400 if email is not provided', async () => {
     const { sut } = makeSut();
     const { name, ...fakeRequest } = fakeSignUpRequestBody;
     const httpRequest: HttpRequest = {
       body: fakeRequest,
     };
 
-    const result = sut.handle(httpRequest);
+    const result = await sut.handle(httpRequest);
 
     expect(result.statusCode).toBe(400);
     expect(result.body?.errors).toBeTruthy();
     expect(result.body?.errors).toHaveLength(1);
   });
 
-  it('Should return status code 400 if password is not provided', () => {
+  it('Should return status code 400 if password is not provided', async () => {
     const { sut } = makeSut();
     const { password, ...fakeRequest } = fakeSignUpRequestBody;
     const httpRequest: HttpRequest = {
       body: fakeRequest,
     };
 
-    const result = sut.handle(httpRequest);
+    const result = await sut.handle(httpRequest);
 
     expect(result.statusCode).toBe(400);
     expect(result.body?.errors).toBeTruthy();
     expect(result.body?.errors).toHaveLength(1);
   });
 
-  it('Should return status code 400 if cpf is not provided', () => {
+  it('Should return status code 400 if cpf is not provided', async () => {
     const { sut } = makeSut();
     const { cpf, ...fakeRequest } = fakeSignUpRequestBody;
     const httpRequest: HttpRequest = {
       body: fakeRequest,
     };
 
-    const result = sut.handle(httpRequest);
+    const result = await sut.handle(httpRequest);
 
     expect(result.statusCode).toBe(400);
     expect(result.body?.errors).toBeTruthy();
     expect(result.body?.errors).toHaveLength(1);
   });
 
-  it('Should return status code 400 if address is not provided', () => {
+  it('Should return status code 400 if address is not provided', async () => {
     const { sut } = makeSut();
     const { address, ...fakeRequest } = fakeSignUpRequestBody;
     const httpRequest: HttpRequest = {
       body: fakeRequest,
     };
 
-    const result = sut.handle(httpRequest);
+    const result = await sut.handle(httpRequest);
 
     expect(result.statusCode).toBe(400);
     expect(result.body?.errors).toBeTruthy();
     expect(result.body?.errors).toHaveLength(1);
   });
 
-  it('Should return status code 400 if address props is not provided', () => {
+  it('Should return status code 400 if address props is not provided', async () => {
     const { sut } = makeSut();
     const { address, ...fakeRequest } = fakeSignUpRequestBody;
     const httpRequest: HttpRequest = {
       body: { ...fakeRequest, address: {} },
     };
 
-    const result = sut.handle(httpRequest);
+    const result = await sut.handle(httpRequest);
 
     expect(result.statusCode).toBe(400);
     expect(result.body?.errors).toBeTruthy();
     expect(result.body?.errors).toHaveLength(4);
   });
 
-  it('Should call validator for email, cpf and zipcode with correct values', () => {
+  it('Should call validator for email, cpf and zipcode with correct values', async () => {
     const { sut, validator } = makeSut();
     const isEmailSpy = jest.spyOn(validator, 'isEmail');
     const isCPFSpy = jest.spyOn(validator, 'isCPF');
@@ -122,7 +122,7 @@ describe('SignUp Controller', () => {
       body: fakeSignUpRequestBody,
     };
 
-    sut.handle(httpRequest);
+    await sut.handle(httpRequest);
 
     const {
       email,
@@ -137,7 +137,7 @@ describe('SignUp Controller', () => {
     expect(isZipCodeSpy).toHaveBeenCalledWith(zipcode);
   });
 
-  it('Should return status code 400 if email is invalid', () => {
+  it('Should return status code 400 if email is invalid', async () => {
     const { sut, validator } = makeSut();
     jest.spyOn(validator, 'isEmail').mockReturnValueOnce(false);
     const fakeRequest = fakeSignUpRequestBody;
@@ -145,14 +145,14 @@ describe('SignUp Controller', () => {
       body: { ...fakeRequest, email: 'invalid_email' },
     };
 
-    const result = sut.handle(httpRequest);
+    const result = await sut.handle(httpRequest);
 
     expect(result.statusCode).toBe(400);
     expect(result.body?.errors).toBeTruthy();
     expect(result.body?.errors).toHaveLength(1);
   });
 
-  it('Should return status code 400 if CPF is invalid', () => {
+  it('Should return status code 400 if CPF is invalid', async () => {
     const { sut, validator } = makeSut();
     jest.spyOn(validator, 'isEmail').mockReturnValueOnce(false);
     const fakeRequest = fakeSignUpRequestBody;
@@ -160,14 +160,14 @@ describe('SignUp Controller', () => {
       body: { ...fakeRequest, cpf: 'invalid_cpf' },
     };
 
-    const result = sut.handle(httpRequest);
+    const result = await sut.handle(httpRequest);
 
     expect(result.statusCode).toBe(400);
     expect(result.body?.errors).toBeTruthy();
     expect(result.body?.errors).toHaveLength(1);
   });
 
-  it('Should return status code 400 if zipcode is invalid', () => {
+  it('Should return status code 400 if zipcode is invalid', async () => {
     const { sut, validator } = makeSut();
     jest.spyOn(validator, 'isEmail').mockReturnValueOnce(false);
     const fakeRequest = fakeSignUpRequestBody;
@@ -175,14 +175,14 @@ describe('SignUp Controller', () => {
       body: { ...fakeRequest, zipcode: 'invalid_zipcode' },
     };
 
-    const result = sut.handle(httpRequest);
+    const result = await sut.handle(httpRequest);
 
     expect(result.statusCode).toBe(400);
     expect(result.body?.errors).toBeTruthy();
     expect(result.body?.errors).toHaveLength(1);
   });
 
-  it('Should call createClient with correct values', () => {
+  it('Should call createClient with correct values', async () => {
     const { sut, createClient } = makeSut();
     const createSpy = jest.spyOn(createClient, 'create');
 
@@ -190,7 +190,7 @@ describe('SignUp Controller', () => {
       body: fakeSignUpRequestBody,
     };
 
-    sut.handle(httpRequest);
+    await sut.handle(httpRequest);
 
     const { name, email, password, cpf } = fakeSignUpRequestBody;
     expect(createSpy).toHaveBeenCalledTimes(1);
@@ -202,19 +202,19 @@ describe('SignUp Controller', () => {
     });
   });
 
-  it('Should return a new client if createClient succeeds', () => {
+  it('Should return a new client if createClient succeeds', async () => {
     const { sut } = makeSut();
     const httpRequest: HttpRequest = {
       body: fakeSignUpRequestBody,
     };
 
-    const result = sut.handle(httpRequest);
+    const result = await sut.handle(httpRequest);
 
     expect(result.statusCode).toBe(200);
     expect(result.body).toHaveProperty('id');
   });
 
-  it('Should return status code 500 if createClient throw an error', () => {
+  it('Should return status code 500 if createClient throw an error', async () => {
     const { sut, createClient } = makeSut();
     jest.spyOn(createClient, 'create').mockImplementation(() => {
       throw new Error();
@@ -223,7 +223,7 @@ describe('SignUp Controller', () => {
       body: fakeSignUpRequestBody,
     };
 
-    const result = sut.handle(httpRequest);
+    const result = await sut.handle(httpRequest);
 
     expect(result.statusCode).toBe(500);
   });

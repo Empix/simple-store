@@ -13,3 +13,8 @@ export const internalServerError = (): HttpResponse => ({
     errors: ['An unknown error has occurred.'],
   },
 });
+
+export const ok = (body: { [key: string]: any }): HttpResponse => ({
+  statusCode: 200,
+  body,
+});
